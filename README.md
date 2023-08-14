@@ -1,4 +1,7 @@
-# JenKinsDepolyScript
+# JenkinsDeployScript
+
+**快速部署jenkins, 部署成功后弹框通知, 不分心于对jenkins的部署和关注**
+
 
 ## 环境
 
