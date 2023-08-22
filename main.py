@@ -11,17 +11,23 @@ def deploy(target_alias):
     target = next((item for item in deploy_list if item.alias == target_alias), None)
     if target is None:
         raise Exception(f'no such alias: {target_alias}')
-    print('find deploy info: folder={}, job={}, branch={}'.format(target.folder, target.job, target.branch))
     # deploy
     toaster = ToastNotifier()
+
+    find_deploy_info_message = 'find deploy info:\nfolder : {}\njob : {}\nbranch : {}'.format(target.folder, target.job,
+                                                                                              target.branch)
+    print(find_deploy_info_message)
+    title = 'Jenkins Deploy'
+    toaster.show_toast(title=title, msg=find_deploy_info_message)
 
     jenkins = JenkinsApi(server.url, target.folder, server.username, server.token)
     build = jenkins.get_job_by_name(target.job).build_with_params({'BRANCH': target.branch})
     print('building build number: {}'.format(build.number))
-    toaster.show_toast('Deploying\n job:{}\n branch:{}'.format(target.job, target.branch))
+    toaster.show_toast(title=title, msg='Deploying\n job:{}\n branch:{}'.format(target.job, target.branch))
+
     build = build.refresh_until_finished()
     print('build result: {}'.format(build.result))
-    toaster.show_toast('Deploy Success\n job:{}\n branch:{}'.format(target.job, target.branch))
+    toaster.show_toast(title=title, msg='Deploy Success\n job:{}\n branch:{}'.format(target.job, target.branch))
 
 
 if __name__ == '__main__':
@@ -40,7 +46,7 @@ if __name__ == '__main__':
 
     # generate config file
     # if args.generate_config_file:
-    if args.get('generate_config_file',None):
+    if args.get('generate_config_file', None):
         config.generate_config_file()
         exit()
 
